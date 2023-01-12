@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Download HTML</title>
+</head>
+
+<body>
+    <button id="downloadButton">Download</button>
+    <script>
+        var downloadButton = document.getElementById("downloadButton");
+        downloadButton.addEventListener("click", function () {
+            var html = document.documentElement.outerHTML;
+            var filename = "CloudCore_v1.html";
+            var blob = new Blob([html], { type: "text/html" });
+            var a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            a.click();
+        });
+    </script>
+</body>
+
+</html>

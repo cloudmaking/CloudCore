@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <style>
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .title-text {
+            /* i want this text to be fairly large. 
+            It should be styles in a retro modern 80s style */
+            font-size: 50px;
+            font-family: 'Futura', Avant Garde, Rockwell, sans-serif;
+            /* suggestion 2 */
+            color: #ffffff;
+            background: linear-gradient(to right, #156800, #fd2600);
+            /* suggestion 3 */
+            text-shadow: 2px 2px 4px #000000;
+            /* suggestion 5 */
+        }
+
+        .down-btn {
+            /* i want this button to be a light grey color */
+            background-color: #d3d3d3;
+            /* suggestion 2 */
+            border: 1px solid #000000;
+            /* suggestion 3 */
+            border-radius: 5px;
+            /* suggestion 4 */
+            box-shadow: 2px 2px 4px #000000;
+            /* font size 25px */
+            font-size: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <!--HEADER---Create a Title that says "CloudCore" with download button-->
+        <h1 class="title-text">
+            CloudCore <button id="downloadButton" class="btn-white down-btn">
+                Free Download</button>
+        </h1>
+        <script>
+            var downloadButton = document.getElementById("downloadButton");
+            downloadButton.addEventListener("click", function () {
+                var html = document.documentElement.outerHTML;
+                var filename = "CloudCore_v1.html";
+                var blob = new Blob([html], { type: "text/html" });
+                var a = document.createElement("a");
+                a.href = URL.createObjectURL(blob);
+                a.download = filename;
+                a.click();
+            });
+        </script>
+    </div>
+
+
+    <!--CONTROLS-->
+    <div class="container mt-5">
+        <div id="container"></div>
+        <!--a drop down menu that gives you a list of modules to add-->
+        <select class="mod-selector">
+            <option value="simp">Simp</option>
+            <option value="dimp">Dimp</option>
+            <option value="fimp">Fimp</option>
+            <option value="gimp">Gimp</option>
+        </select>
+        <button id="addButton">Add</button>
+        <button id="removeButton">Remove</button>
+        <script>
+            class Divs {
+                constructor() {
+                    this.divs = [];
+                }
+                create() {
+                    var newDiv;
+                    if (document.getElementById("mod-selector").value == "simp") { newDiv = templateOne(); }
+                    if (document.getElementById("mod-selector").value == "dimp") { newDiv = templateTwo(); }
+                    if (document.getElementById("mod-selector").value == "fimp") { newDiv = templateThree(); }
+                    if (document.getElementById("mod-selector").value == "gimp") { newDiv = templateFour(); }
+                    this.divs.push(newDiv);
+                    document.getElementById("container").appendChild(newDiv);
+                }
+                remove() {
+                    var lastDiv = this.divs.pop();
+                    lastDiv.remove();
+                }
+            }
+            var divs = new Divs();
+            var addButton = document.getElementById("addButton");
+            addButton.addEventListener("click", function () {
+                divs.create();
+            });
+            var removeButton = document.getElementById("removeButton");
+            removeButton.addEventListener("click", function () {
+                divs.remove();
+            });
+        </script>
+    </div>
+
+    <!--MODULES-->
+    <script>
+        function templateOne() {
+            var div = document.createElement("div");
+            div.style.height = "50px";
+            div.style.width = "50px";
+            div.style.backgroundColor = "red";
+            div.style.margin = "10px";
+            return div;
+        }
+
+    </script>
+</body>
+
+</html>
