@@ -30,8 +30,8 @@
             /* background-color: #e6b0ff; */
             align-self: stretch;
             border: 0px solid #edffee;
-            border-radius: 0px;
-            box-shadow: 0px 0px 0px #000000;
+            border-radius: 5px;
+            box-shadow: 2px 2px 1px #000000;
             font-size: 15px;
             font-family: Arial, Helvetica, sans-serif;
             margin-left: 25px;
@@ -41,7 +41,7 @@
             background-color: #ffffff;
             border: 1px solid #000000;
             border-radius: 5px;
-            box-shadow: 2px 2px 4px #000000;
+            box-shadow: 2px 2px 1px #000000;
             font-size: 15px;
             margin-left: 10px;
         }
@@ -50,9 +50,21 @@
             background-color: #ffffff;
             border: 1px solid #000000;
             border-radius: 5px;
-            box-shadow: 2px 2px 4px #000000;
+            box-shadow: 2px 2px 1px #000000;
             font-size: 15px;
             margin-left: 10px;
+        }
+
+        input {
+            background-color: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 5px;
+            font-size: 15px;
+            margin-left: 10px;
+            -webkit-appearance: none;
+            width: 95%;
+
+
         }
 
     </style>
@@ -185,6 +197,12 @@
             // append oscSelector to div
             div.appendChild(oscSelector);
 
+            // create a spacer div
+            var spacer = document.createElement('div');
+            spacer.classList.add('spacer');
+            spacer.style.height = '10px';
+            div.appendChild(spacer);
+
             // Notes input field
             var notesInput = document.createElement('input');
             notesInput.classList.add('notes-input');
@@ -231,6 +249,7 @@
             // create a spacer div
             var spacer = document.createElement('div');
             spacer.classList.add('spacer');
+            spacer.style.height = '10px';
             div.appendChild(spacer);
 
             // create a simple label that says 'BPM:'
@@ -369,7 +388,7 @@
             });
 
             // Div styling
-            div.style.height = '125px';
+            div.style.height = '250px';
             div.style.width = '400px';
             div.style.margin = '0 auto';
             div.style.marginTop = '10px';
