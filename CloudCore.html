@@ -2,8 +2,9 @@
 <html>
 
 <head>
-    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css'
-        integrity='sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z' crossorigin='anonymous'>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>CloudCore</title>
     <style>
         .container {
             max-width: 500px;
@@ -12,38 +13,56 @@
         }
 
         .title-text {
-            /* i want this text to be fairly large. 
-            It should be styles in a retro modern 80s style */
             font-size: 50px;
-            font-family: 'Futura', Avant Garde, Rockwell, sans-serif;
-            /* suggestion 2 */
+            font-family: sans-serif;
             color: #ffffff;
-            background: linear-gradient(to right, #156800, #fd2600);
-            /* suggestion 3 */
-            text-shadow: 2px 2px 4px #000000;
-            /* suggestion 5 */
+            background: linear-gradient(to right, #7a83ff, #53c0ff);
+            text-shadow: 2px 2px 4px #6fff9a;
+            border-radius: 5px;
+            /* align the button in this h1 to the center of the text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .down-btn {
-            /* i want this button to be a light grey color */
-            background-color: #d3d3d3;
-            /* suggestion 2 */
-            border: 1px solid #000000;
-            /* suggestion 3 */
-            border-radius: 5px;
-            /* suggestion 4 */
-            box-shadow: 2px 2px 4px #000000;
-            /* font size 25px */
+            background-color: #b1ffcf;
+            /* background-color: #e6b0ff; */
+            align-self: stretch;
+            border: 0px solid #edffee;
+            border-radius: 0px;
+            box-shadow: 0px 0px 0px #000000;
             font-size: 15px;
+            font-family: Arial, Helvetica, sans-serif;
+            margin-left: 25px;
         }
+
+        button {
+            background-color: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 5px;
+            box-shadow: 2px 2px 4px #000000;
+            font-size: 15px;
+            margin-left: 10px;
+        }
+
+        select {
+            background-color: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 5px;
+            box-shadow: 2px 2px 4px #000000;
+            font-size: 15px;
+            margin-left: 10px;
+        }
+
     </style>
 </head>
 
 <body>
-    <div class='container mt-5'>
+    <div class='container'>
         <!--HEADER---Create a Title that says 'CloudCore' with download button-->
         <h1 class='title-text'>
-            CloudCore <button id='downloadButton' class='btn-white down-btn'>
+            CloudCore <button id='downloadButton' class='down-btn'>
                 Free Download</button>
         </h1>
         <script>
@@ -62,9 +81,10 @@
 
 
     <!--MAIN UI-->
-    <div class='container mt-5'>
-        <div id='container'></div>
-        <!--a drop down menu that gives you a list of modules to add-->
+    <div class='container'>
+        <div id='mod_container'></div>
+        <!--a spacer-->
+        <div class='spacer' style='height: 10px;'></div>
         <select class='mod-selector'>
             <option value='simp'>Simp</option>
             <option value='dimp'>Dimp</option>
@@ -80,8 +100,8 @@
         class Divs {
             constructor() {
                 this.divs = [];
-                this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                this.isPlaying = false;
+                //this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                //this.isPlaying = false;
             }
             create() {
                 var selector = document.querySelector('.mod-selector');
@@ -97,13 +117,7 @@
                     newDiv = templateFour();
                 }
                 this.divs.push(newDiv);
-                document.getElementById('container').appendChild(newDiv);
-
-                // Add event listeners for play and stop buttons
-                var playButton = newDiv.querySelector('.play-btn');
-                var stopButton = newDiv.querySelector('.stop-btn');
-                playButton.addEventListener('click', this.play.bind(this));
-                stopButton.addEventListener('click', this.stop.bind(this));
+                document.getElementById('mod_container').appendChild(newDiv);
             }
 
             remove() {
@@ -132,6 +146,12 @@
             spacer.classList.add('spacer');
             spacer.style.height = '10px';
             div.appendChild(spacer);
+
+            // create a loop button
+            var loopButton = document.createElement('button');
+            loopButton.classList.add('loop-button');
+            loopButton.innerHTML = 'Loop';
+            div.appendChild(loopButton);
 
             // Play button
             var playButton = document.createElement('button');
@@ -193,6 +213,8 @@
             volumeSlider.max = '1';
             volumeSlider.step = '0.01';
             volumeSlider.value = '0.5';
+            // change teh colour of the slider to purple
+            volumeSlider.style.background = '#e6b0ff';
             volumeSlider.innerHTML = volumeSlider.value;
             div.appendChild(volumeSlider);
 
@@ -268,6 +290,10 @@
                 const oscillator_type = document.querySelector('select').value;
                 oscillator.type = oscillator_type;
                 oscillator.start();
+                // get the value of the volume slider
+                const volume = document.querySelector('.volume-slider').value;
+                gainNode.gain.value = volume;
+
                 setTimeout(() => {
                     oscillator.stop();
                 }, note_length * 1000);
@@ -303,11 +329,7 @@
             spacer.classList.add('spacer');
             div.appendChild(spacer);
 
-            // create a loop button
-            var loopButton = document.createElement('button');
-            loopButton.classList.add('loop-button');
-            loopButton.innerHTML = 'Loop';
-            div.appendChild(loopButton);
+            
 
             // LOOP BUTTON
             loopButton.addEventListener('click', () => {
@@ -347,23 +369,187 @@
             });
 
             // Div styling
-            div.style.height = '200px';
+            div.style.height = '125px';
             div.style.width = '400px';
             div.style.margin = '0 auto';
             div.style.marginTop = '10px';
             div.style.border = '1px solid black';
-            div.style.backgroundColor = '#d3d3d3';
+            div.style.backgroundColor = '#ffc6b0';
+            div.style.borderRadius = '5px';
             return div;
         }
 
         function templateTwo() {
             var div = document.createElement('div');
-            div.style.height = '50px';
-            div.style.width = '50px';
-            div.style.backgroundColor = 'black';
-            div.style.margin = '10px';
+            // list all the midi devices that are connected in a div
+            // create a dropdown menu
+            //var midiDevices = document.createElement('select');
+            //midiDevices.classList.add('midi-devices');
+            //div.appendChild(midiDevices);
+
+            // create a button that will run a function that lists all the midi devices
+            //var midiButton = document.createElement('button');
+            //midiButton.classList.add('midi-button');
+            //midiButton.innerHTML = 'List MIDI Devices';
+            //midiButton.addEventListener('click', listMidiDevices);
+            //div.appendChild(midiButton);
+
+            // create a spacer div
+            var spacer = document.createElement('div');
+            spacer.classList.add('spacer');
+            div.appendChild(spacer);
+
+            // create a spacer div
+            var spacer = document.createElement('div');
+            spacer.classList.add('spacer');
+            div.appendChild(spacer);
+
+            //create a h3 element
+            var note_display = document.createElement('h4');
+            note_display.innerHTML = 'played notes will appear here';
+            div.appendChild(note_display);
+
+            // create a spacer div
+            var spacer = document.createElement('div');
+            spacer.classList.add('spacer');
+            div.appendChild(spacer);
+
+            // add a label for the note length slider that updates as the slider is moved
+            var noteLengthLabel = document.createElement('label');
+            noteLengthLabel.classList.add('note-length-label');
+            noteLengthLabel.innerHTML = 'Note Length:';
+            div.appendChild(noteLengthLabel);
+
+            // create a slider for note play length, with the label note length and a value of 1
+            var noteLengthSlider = document.createElement('input');
+            noteLengthSlider.classList.add('note-length-slider');
+            noteLengthSlider.type = 'range';
+            noteLengthSlider.min = '0.1';
+            noteLengthSlider.max = '2';
+            noteLengthSlider.step = '0.1';
+            noteLengthSlider.value = '1';
+            div.appendChild(noteLengthSlider);
+
+            // update the label as the slider is moved
+            noteLengthSlider.addEventListener('input', () => {
+                noteLengthLabel.innerHTML = noteLengthSlider.value;
+            });
+
+            // create a spacer div
+            var spacer = document.createElement('div');
+            spacer.classList.add('spacer');
+            div.appendChild(spacer);
+
+            // create a lable for the oscilator selector
+            var oscLabel = document.createElement('label');
+            oscLabel.innerHTML = 'Oscilator Type: ';
+            div.appendChild(oscLabel);
+
+            // create a dropdown menu that let you choose the ocsilator type
+            var oscType = document.createElement('select');
+            oscType.classList.add('osc-type');
+            div.appendChild(oscType);
+
+            // create an option for each osc type
+            var sine = document.createElement('option');
+            sine.innerHTML = 'sine';
+            oscType.appendChild(sine);
+
+            var square = document.createElement('option');
+            square.innerHTML = 'square';
+            oscType.appendChild(square);
+
+            var sawtooth = document.createElement('option');
+            sawtooth.innerHTML = 'sawtooth';
+            oscType.appendChild(sawtooth);
+
+            var triangle = document.createElement('option');
+            triangle.innerHTML = 'triangle';
+            oscType.appendChild(triangle);
+
+            // create the function that lists all the midi devices and appends them to the div
+            //function listMidiDevices() {
+            //    // clear the div
+            //    midiDevices.innerHTML = '';
+            //    // get the midi devices
+            //    navigator.requestMIDIAccess().then(function (midiAccess) {
+            //        // get the inputs
+            //        var inputs = midiAccess.inputs;
+            //        // loop through the inputs
+            //        for (var input of inputs.values()) {
+            //            // create a div for each input
+            //            var inputOption = document.createElement('option');
+            //            inputOption.classList.add('input-option');
+            //            inputOption.innerHTML = input.name;
+            //            midiDevices.appendChild(inputOption);
+            //        }
+            //    });
+            //}
+
+            navigator.requestMIDIAccess().then(function (midiAccess) {
+                // get the inputs
+                var inputs = midiAccess.inputs;
+                // loop through the inputs
+                for (var input of inputs.values()) {
+                    // connect to the input
+                    input.onmidimessage = function (event) {
+                        // get the note
+                        var note = event.data[1];
+                        // get the velocity
+                        var velocity = event.data[2];
+                        // if the velocity is greater than 0
+                        if (velocity > 0) {
+                            // play the note
+                            play(note, velocity);
+                            // display the note
+                            note_display.innerHTML = note + ' ' + velocity;
+                        }
+                    };
+                }
+            });
+
+            function play(note, velocity) {
+                // create a new audio context
+                var audioContext = new AudioContext();
+                // create an oscillator
+                var oscillator = audioContext.createOscillator();
+                // create a gain node
+                var gainNode = audioContext.createGain();
+                // connect the oscillator to the gain node
+                oscillator.connect(gainNode);
+                // connect the gain node to the audio context
+                gainNode.connect(audioContext.destination);
+                // set the oscillator type to sine
+                oscillator.type = oscType.value;
+                // set the frequency of the oscillator
+                oscillator.frequency.value = noteToFrequency(note);
+                // set the gain node gain
+                gainNode.gain.value = velocity / 127;
+                // start the oscillator
+                oscillator.start();
+                // decrease the gain node game over time
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + noteLengthSlider.value);
+                // stop the oscillator after the note length
+                setTimeout(function () {
+                    oscillator.stop();
+                }, noteLengthSlider.value * 1000);
+            }
+
+            function noteToFrequency (note) {
+                return 440 * Math.pow(2, (note - 69) / 12);
+            }
+
+            // Div styling
+            div.style.height = '150px';
+            div.style.width = '400px';
+            div.style.margin = '0 auto';
+            div.style.marginTop = '10px';
+            div.style.border = '1px solid black';
+            div.style.backgroundColor = '#e6b0ff';
+            div.style.borderRadius = '5px';
             return div;
         }
+
         function templateThree() {
             var div = document.createElement('div');
             div.style.height = '50px';
