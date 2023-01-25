@@ -109,8 +109,8 @@
         class Divs {
             constructor() {
                 this.divs = [];
-                //this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                //this.isPlaying = false;
+                this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                this.isPlaying = false;
             }
             create() {
                 var selector = document.querySelector('.mod-selector');
@@ -177,7 +177,6 @@
             // create a spacer div
             var spacer = document.createElement('div');
             spacer.classList.add('spacer');
-            // make the high div 10px tall
             spacer.style.height = '10px';
             div.appendChild(spacer);
 
@@ -191,7 +190,6 @@
                 option.innerHTML = oscTypes[i];
                 oscSelector.appendChild(option);
             }
-            // append oscSelector to div
             div.appendChild(oscSelector);
 
             // create a spacer div
@@ -217,7 +215,7 @@
             // create a simple label that says 'Volume:'
             var volumeLabel = document.createElement('label');
             volumeLabel.classList.add('volume-label');
-            volumeLabel.innerHTML = 'Volume:   ';
+            volumeLabel.innerHTML = 'Volume: 0.5';
             div.appendChild(volumeLabel);
 
             // Volume slider
@@ -228,19 +226,13 @@
             volumeSlider.max = '1';
             volumeSlider.step = '0.01';
             volumeSlider.value = '0.5';
-            // change teh colour of the slider to purple
             volumeSlider.style.background = '#e6b0ff';
             volumeSlider.innerHTML = volumeSlider.value;
             div.appendChild(volumeSlider);
 
-            // create a label with a number that shows the current volume
-            var volumeLabel = document.createElement('label');
-            volumeLabel.classList.add('volume-label');
-            volumeLabel.innerHTML = volumeSlider.value;
-            div.appendChild(volumeLabel);
             // update the volume label when the slider is moved
             volumeSlider.addEventListener('input', function () {
-                volumeLabel.innerHTML = volumeSlider.value;
+                volumeLabel.innerHTML = 'Volume: '+volumeSlider.value;
             });
 
             // create a spacer div
@@ -252,7 +244,7 @@
             // create a simple label that says 'BPM:'
             var bpmLabel = document.createElement('label');
             bpmLabel.classList.add('bpm-label');
-            bpmLabel.innerHTML = 'BPM:   ';
+            bpmLabel.innerHTML = 'BPM: '+ '50';
             div.appendChild(bpmLabel);
 
             // BPM slider
@@ -265,14 +257,9 @@
             bpmSlider.value = '50';
             div.appendChild(bpmSlider);
 
-            // create a label with a number that shows the current BPM
-            var bpmLabel = document.createElement('label');
-            bpmLabel.classList.add('bpm-label');
-            bpmLabel.innerHTML = bpmSlider.value;
-            div.appendChild(bpmLabel);
             // update the BPM label when the slider is moved
             bpmSlider.addEventListener('input', function () {
-                bpmLabel.innerHTML = bpmSlider.value;
+                bpmLabel.innerHTML = 'BPM: '+bpmSlider.value;
             });
 
             // dictionary of notes and their frequencies
@@ -302,13 +289,11 @@
                 oscillator.frequency.value = notes[x];
                 oscillator.connect(gainNode);
                 gainNode.connect(audioCtx.destination);
-                // get the value of the oscillator type
                 const oscillator_type = document.querySelector('select').value;
                 oscillator.type = oscillator_type;
                 setTimeout(function () {
                     oscillator.start();
                 }, 0);
-                // get the value of the volume slider
                 const volume = document.querySelector('.volume-slider').value;
                 gainNode.gain.value = volume;
 
@@ -319,15 +304,10 @@
 
             // PLAY BUTTON
             playButton.addEventListener('click', () => {
-                // get the value of the input field
                 const input = document.querySelector('input').value;
-                // split the input into an array of notes
                 const notes = input.split(' ');
-                // get the value of the bpm slider
                 const bpm = document.querySelector('.bpm-slider').value;
-                // calculate the note length
                 note_length = 60 / bpm;
-                // loop through the notes array and play each note ONE AT A TIME
                 notes.forEach((note, index) => {
                     setTimeout(() => {
                         play(note);
@@ -337,32 +317,23 @@
 
             // STOP BUTTON
             stopButton.addEventListener('click', () => {
-                // IF THERE IS ANY AUDIO PLAYING STOP IT
                 const audioCtx = new AudioContext();
                 audioCtx.close();
             });
 
-            // create a spacer div
             var spacer = document.createElement('div');
             spacer.classList.add('spacer');
             div.appendChild(spacer);
 
-
-
             // LOOP BUTTON
             loopButton.addEventListener('click', () => {
-                // do what the play button does but in a while loop that runs forever until the stop button is pressed
                 const input = document.querySelector('input').value;
                 const notes = input.split(' ');
                 const bpm = document.querySelector('.bpm-slider').value;
                 note_length = 60 / bpm;
-                // create a variable to keep track of the index
                 let index = 0;
-                // create a variable to keep track of the loop
                 let loop = true;
-                // create a variable to keep track of the interval
                 let interval;
-                // create a function that plays the notes
                 function playNotes() {
                     play(notes[index]);
                     index++;
@@ -370,17 +341,13 @@
                         index = 0;
                     }
                 }
-                // create a function that starts the loop
                 function startLoop() {
                     interval = setInterval(playNotes, note_length * 1000);
                 }
-                // create a function that stops the loop
                 function stopLoop() {
                     clearInterval(interval);
                 }
-                // start the loop
                 startLoop();
-                // stop the loop when the stop button is pressed
                 stopButton.addEventListener('click', () => {
                     stopLoop();
                 });
@@ -446,12 +413,12 @@
             spacer.classList.add('spacer');
             div.appendChild(spacer);
 
-            // create a lable for the oscilator selector
+            // create a label for the oscillator selector
             var oscLabel = document.createElement('label');
-            oscLabel.innerHTML = 'Oscilator Type: ';
+            oscLabel.innerHTML = 'Oscillator Type: ';
             div.appendChild(oscLabel);
 
-            // create a dropdown menu that let you choose the ocsilator type
+            // create a dropdown menu that let you choose the oscillator type
             var oscType = document.createElement('select');
             oscType.classList.add('osc-type');
             div.appendChild(oscType);
@@ -472,8 +439,6 @@
             var triangle = document.createElement('option');
             triangle.innerHTML = 'triangle';
             oscType.appendChild(triangle);
-
-
 
             navigator.requestMIDIAccess().then(function (midiAccess) {
                 // get the inputs
@@ -498,29 +463,18 @@
             });
 
             function play(note, velocity) {
-                // create a new audio context
                 var audioContext = new AudioContext();
-                // create an oscillator
                 var oscillator = audioContext.createOscillator();
-                // create a gain node
                 var gainNode = audioContext.createGain();
-                // connect the oscillator to the gain node
                 oscillator.connect(gainNode);
-                // connect the gain node to the audio context
                 gainNode.connect(audioContext.destination);
-                // set the oscillator type to sine
                 oscillator.type = oscType.value;
-                // set the frequency of the oscillator
                 oscillator.frequency.value = noteToFrequency(note);
-                // set the gain node gain
                 gainNode.gain.value = velocity / 127;
-                // start the oscillator
                 setTimeout(function () {
                     oscillator.start();
                 }, 0);
-                // decrease the gain node game over time
                 gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + noteLengthSlider.value);
-                // stop the oscillator after the note length
                 setTimeout(function () {
                     oscillator.stop();
                 }, noteLengthSlider.value * 1000);
@@ -586,164 +540,6 @@
 
         function templateFour() {
             var div = document.createElement('div');
-            // create an array of elements to create
-            const elements = [
-                { type: 'div', class: 'spacer', style: 'height: 10px;' },
-                { type: 'input', class: 'notes-input', type: 'text', placeholder: 'Enter notes here...' },
-                { type: 'div', class: 'spacer', style: 'height: 10px;' },
-                { type: 'label', class: 'volume-label', text: 'Volume:   ' },
-                { type: 'input', class: 'volume-slider', type: 'range', min: '0', max: '1', step: '0.01', value: '0.5', style: 'background: #e6b0ff', },
-                { type: 'label', class: 'volume-label', text: '' },
-                { type: 'div', class: 'spacer', style: 'height: 10px;' },
-                { type: 'label', class: 'bpm-label', text: 'BPM:   ' },
-                { type: 'input', class: 'bpm-slider', type: 'range', min: '1', max: '200', step: '1', value: '50' },
-                { type: 'label', class: 'bpm-label', text: '' }
-            ];
-
-            // loop through the elements array
-            for (const element of elements) {
-                // create the element
-                const newElement = document.createElement(element.type);
-                // set the class
-                newElement.classList.add(element.class);
-                // set the style
-                if (element.style) {
-                    newElement.setAttribute('style', element.style);
-                }
-                // set the text or options
-                if (element.text) {
-                    newElement.innerHTML = element.text;
-                }
-                // set the type and value
-                if (element.type === 'input') {
-                    newElement.setAttribute('type', element.type);
-                    newElement.setAttribute('value', element.value);
-                    newElement.setAttribute('placeholder', element.placeholder);
-                    newElement.setAttribute('min', element.min);
-                    newElement.setAttribute('max', element.max);
-                    newElement.setAttribute('step', element.step);
-                    // add the event listener
-                    if (element.class === 'volume-slider' || element.class === 'bpm-slider') {
-                        newElement.addEventListener('input', function () {
-                            var label = document.querySelector('.${ element.class } + .${ element.class }');
-                            label.innerHTML = newElement.value;
-                        });
-                    }
-                }
-                // append the element to the div
-                div.appendChild(newElement);
-            }
-
-            // dictionary of notes and their frequencies
-            const notes = {
-                'C': 261.63,
-                'C#': 277.18,
-                'D': 293.66,
-                'D#': 311.13,
-                'E': 329.63,
-                'F': 349.23,
-                'F#': 369.99,
-                'G': 392.00,
-                'G#': 415.30,
-                'A': 440.00,
-                'A#': 466.16,
-                'B': 493.88
-            };
-
-            // set the note length to 0.25 seconds by default
-            let note_length = 1;
-
-            //create a function that plays a note for a certain note_length THEN stops the note
-            function play(x) {
-                const audioCtx = new AudioContext();
-                const oscillator = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                oscillator.frequency.value = notes[x];
-                oscillator.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                // get the value of the oscillator type
-                const oscillator_type = document.querySelector('select').value;
-                oscillator.type = oscillator_type;
-                setTimeout(function () {
-                    oscillator.start();
-                }, 0);
-                // get the value of the volume slider
-                const volume = document.querySelector('.volume-slider').value;
-                gainNode.gain.value = volume;
-
-                setTimeout(() => {
-                    oscillator.stop();
-                }, note_length * 1000);
-            }
-
-            // PLAY BUTTON
-            playButton.addEventListener('click', () => {
-                // get the value of the input field
-                const input = document.querySelector('input').value;
-                // split the input into an array of notes
-                const notes = input.split(' ');
-                // get the value of the bpm slider
-                const bpm = document.querySelector('.bpm-slider').value;
-                // calculate the note length
-                note_length = 60 / bpm;
-                // loop through the notes array and play each note ONE AT A TIME
-                notes.forEach((note, index) => {
-                    setTimeout(() => {
-                        play(note);
-                    }, index * note_length * 1000);
-                });
-            });
-
-            // STOP BUTTON
-            stopButton.addEventListener('click', () => {
-                // IF THERE IS ANY AUDIO PLAYING STOP IT
-                const audioCtx = new AudioContext();
-                audioCtx.close();
-            });
-
-            // create a spacer div
-            var spacer = document.createElement('div');
-            spacer.classList.add('spacer');
-            div.appendChild(spacer);
-
-
-
-            // LOOP BUTTON
-            loopButton.addEventListener('click', () => {
-                // do what the play button does but in a while loop that runs forever until the stop button is pressed
-                const input = document.querySelector('input').value;
-                const notes = input.split(' ');
-                const bpm = document.querySelector('.bpm-slider').value;
-                note_length = 60 / bpm;
-                // create a variable to keep track of the index
-                let index = 0;
-                // create a variable to keep track of the loop
-                let loop = true;
-                // create a variable to keep track of the interval
-                let interval;
-                // create a function that plays the notes
-                function playNotes() {
-                    play(notes[index]);
-                    index++;
-                    if (index === notes.length) {
-                        index = 0;
-                    }
-                }
-                // create a function that starts the loop
-                function startLoop() {
-                    interval = setInterval(playNotes, note_length * 1000);
-                }
-                // create a function that stops the loop
-                function stopLoop() {
-                    clearInterval(interval);
-                }
-                // start the loop
-                startLoop();
-                // stop the loop when the stop button is pressed
-                stopButton.addEventListener('click', () => {
-                    stopLoop();
-                });
-            });
 
             // Div styling
             div.style.height = '250px';
