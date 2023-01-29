@@ -133,6 +133,24 @@
                 var lastDiv = this.divs.pop();
                 lastDiv.remove();
             }
+
+            play() {
+                if (this.isPlaying) {
+                    return;
+                }
+                this.isPlaying = true;
+                var osc = this.audioCtx.createOscillator();
+                osc.type = 'sine';
+                osc.frequency.value = 440;
+                osc.connect(this.audioCtx.destination);
+                osc.start();
+                osc.stop(this.audioCtx.currentTime + 1);
+                this.isPlaying = false;
+            }
+
+            stop() {
+                this.audioCtx.close();
+            }
         }
         var divs = new Divs();
         var addButton = document.getElementById('addButton');

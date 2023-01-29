@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>CloudCore</title>
+    <style>
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .title-text {
+            font-size: 50px;
+            font-family: sans-serif;
+            color: #ffffff;
+            background: linear-gradient(to right, #7a83ff, #53c0ff);
+            text-shadow: 2px 2px 4px #6fff9a;
+            border-radius: 5px;
+            /* align the button in this h1 to the center of the text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .down-btn {
+            background-color: #b1ffcf;
+            /* background-color: #e6b0ff; */
+            align-self: stretch;
+            border: 0px solid #edffee;
+            border-radius: 5px;
+            box-shadow: 2px 2px 1px #000000;
+            font-size: 15px;
+            font-family: Arial, Helvetica, sans-serif;
+            margin-left: 25px;
+        }
+
+        .metronome {
+            background-color: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 5px;
+            box-shadow: 2px 2px 1px #000000;
+            margin-left: 10px;
+            width: 95%;
+        }
+
+        button {
+            background-color: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 5px;
+            box-shadow: 2px 2px 1px #000000;
+            font-size: 15px;
+            margin-left: 10px;
+        }
+
+        select {
+            background-color: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 5px;
+            box-shadow: 2px 2px 1px #000000;
+            font-size: 15px;
+            margin-left: 10px;
+        }
+
+        input {
+            background-color: #ffffff;
+            border: 1px solid #000000;
+            border-radius: 5px;
+            font-size: 15px;
+            margin-left: 10px;
+            -webkit-appearance: none;
+            width: 95%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class='container'>
+        <!--HEADER---Create a Title that says 'CloudCore' with download button-->
+        <h1 class='title-text'>
+            CloudCore <button id='downloadButton' class='down-btn'>
+                Free Download</button>
+        </h1>
+        <script>
+            var downloadButton = document.getElementById('downloadButton');
+            downloadButton.addEventListener('click', function () {
+                var html = document.documentElement.outerHTML;
+                var filename = 'CloudCore_v1.html';
+                var blob = new Blob([html], { type: 'text/html' });
+                var a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = filename;
+                a.click();
+            });
+        </script>
+    </div>
+
+
+    <!--MAIN UI-->
+    <div class='container'>
+        <div id='mod_container'></div>
+        <!--a spacer-->
+        <br>
+        <select class='mod-selector'>
+            <option value='simp'>Simp</option>
+            <option value='dimp'>Dimp</option>
+            <option value='fimp'>Fimp</option>
+            <option value='gimp'>Gimp</option>
+        </select>
+        <button id='addButton'>Add</button>
+        <button id='removeButton'>Remove</button>
+        <br>
+        <br>
+        <!-- add a dicc with calss metronome -->
+        <div class='metronome'>
+            <br>
+            <button id='playMetronomeButton'>Play</button>
+            <button id='stopMetronomeButton'>Stop</button>
+            <p>BPM: <span id='metronomeValue'>90</span></p>
+            <input type='range' min='1' max='240' value='90' id='metronomeRange'>
+            
+            <!-- make a slider for metronome volume -->
+            <p>Volume: <span id='metronomeVolumeValue'>0.5</span></p>
+            <input type='range' min='0' max='1' value='0.5' step='0.01' id='metronomeVolume'>
+            <br>
+            <br>
+        </div>
+    </div>
+
+    <!--MAIN UI SCRIPT-->
+    <script>
+        class Divs {
+            constructor() {
+                this.divs = [];
+                this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                this.isPlaying = false;
+            }
+            create() {
+                var selector = document.querySelector('.mod-selector');
+                var selectedOption = selector.value;
+                var newDiv;
+                if (selectedOption === 'simp') {
+                    newDiv = templateOne();
+                } else if (selectedOption === 'dimp') {
+                    newDiv = templateTwo();
+                } else if (selectedOption === 'fimp') {
+                    newDiv = templateThree();
+                } else if (selectedOption === 'gimp') {
+                    newDiv = templateFour();
+                }
+                this.divs.push(newDiv);
+                document.getElementById('mod_container').appendChild(newDiv);
+            }
+
+            remove() {
+                var lastDiv = this.divs.pop();
+                lastDiv.remove();
+            }
+
+            play_metronome() {
+                if (this.isPlaying) {
+                    return;
+                }
+                this.isPlaying = true;
+                // play a single note that plays 90 times a minute
+                var osc = this.audioCtx.createOscillator();
+                osc.type = 'sine';
+                osc.frequency.value = 440;
+                // control the volume of the oscillator
+                var gain = this.audioCtx.createGain();
+                gain.gain.value = document.getElementById('metronomeVolume').value;
+                osc.connect(gain);
+                gain.connect(this.audioCtx.destination);
+                osc.connect(this.audioCtx.destination);
+                osc.start();
+                osc.stop(this.audioCtx.currentTime + 0.1);
+                // schedule the next note
+                this.schedule_next_note();
+                this.isPlaying = false;
+            }
+
+            schedule_next_note() {
+                var thisObj = this;
+                this.metronome_timeout = setTimeout(function () {
+                    thisObj.isPlaying = false;
+                    thisObj.play_metronome();
+                }, 60000 / document.getElementById('metronomeRange').value);
+            }
+
+            stop_metronome() {
+                this.audioCtx.close();
+                this.isPlaying = false;
+            }
+        }
+        var divs = new Divs();
+        var addButton = document.getElementById('addButton');
+        addButton.addEventListener('click', function () {
+            divs.create();
+        });
+        var removeButton = document.getElementById('removeButton');
+        removeButton.addEventListener('click', function () {
+            divs.remove();
+        });
+        var playButton = document.getElementById('playMetronomeButton');
+        playButton.addEventListener('click', function () {
+            divs.play_metronome();
+        });
+        var stopButton = document.getElementById('stopMetronomeButton');
+        stopButton.addEventListener('click', function () {
+            divs.stop_metronome();
+        });
+        var metronomeRange = document.getElementById('metronomeRange');
+        metronomeRange.addEventListener('input', function () {
+            var metronomeValue = document.getElementById('metronomeValue');
+            metronomeValue.innerHTML = metronomeRange.value;
+        });
+        var metronomeVolume = document.getElementById('metronomeVolume');
+        metronomeVolume.addEventListener('input', function () {
+            var metronomeVolumeValue = document.getElementById('metronomeVolumeValue');
+            metronomeVolumeValue.innerHTML = metronomeVolume.value;
+        });
+    </script>
+
+    <!--MODULES-->
+    <script>
+        function templateOne() {
+            var div = document.createElement('div');
+
+            // create a spacer div
+            var spacer = document.createElement('div');
+            spacer.classList.add('spacer');
+            spacer.style.height = '10px';
+            div.appendChild(spacer);
+
+            // create a loop button
+            var loopButton = document.createElement('button');
+            loopButton.classList.add('loop-button');
+            loopButton.innerHTML = 'Loop';
+            div.appendChild(loopButton);
+
+            // Play button
+            var playButton = document.createElement('button');
+            playButton.classList.add('play-btn');
+            playButton.innerHTML = 'Play';
+            div.appendChild(playButton);
+
+            // Stop button
+            var stopButton = document.createElement('button');
+            stopButton.classList.add('stop-btn');
+            stopButton.innerHTML = 'Stop';
+            div.appendChild(stopButton);
+
+            // create a spacer div
+            var spacer = document.createElement('div');
+            spacer.classList.add('spacer');
+            spacer.style.height = '10px';
+            div.appendChild(spacer);
+
+            // Create an Oscillator type selector
+            var oscSelector = document.createElement('select');
+            oscSelector.classList.add('osc-selector');
+            var oscTypes = ['sine', 'square', 'sawtooth', 'triangle'];
+            for (var i = 0; i < oscTypes.length; i++) {
+                var option = document.createElement('option');
+                option.value = oscTypes[i];
+                option.innerHTML = oscTypes[i];
+                oscSelector.appendChild(option);
+            }
+            div.appendChild(oscSelector);
+
+            // create a spacer div
+            var spacer = document.createElement('div');
+            spacer.classList.add('spacer');
+            spacer.style.height = '10px';
+            div.appendChild(spacer);
+
+            // Notes input field
+            var notesInput = document.createElement('input');
+            notesInput.classList.add('notes-input');
+            notesInput.type = 'text';
+            notesInput.placeholder = 'Enter notes here...';
+            // append notesInput to div
+            div.appendChild(notesInput);
+
+            // create a spacer div
+            var spacer = document.createElement('div');
+            spacer.classList.add('spacer');
+            spacer.style.height = '10px';
+            div.appendChild(spacer);
+
+            // create a simple label that says 'Volume:'
+            var volumeLabel = document.createElement('label');
+            volumeLabel.classList.add('volume-label');
+            volumeLabel.innerHTML = 'Volume: 0.5';
+            div.appendChild(volumeLabel);
+
+            // Volume slider
+            var volumeSlider = document.createElement('input');
+            volumeSlider.classList.add('volume-slider');
+            volumeSlider.type = 'range';
+            volumeSlider.min = '0';
+            volumeSlider.max = '1';
+            volumeSlider.step = '0.01';
+            volumeSlider.value = '0.5';
+            volumeSlider.style.background = '#e6b0ff';
+            volumeSlider.innerHTML = volumeSlider.value;
+            div.appendChild(volumeSlider);
+
+            // update the volume label when the slider is moved
+            volumeSlider.addEventListener('input', function () {
+                volumeLabel.innerHTML = 'Volume: ' + volumeSlider.value;
+            });
+
+            // dictionary of notes and their frequencies
+            const notes = {
+                'C': 261.63,
+                'C#': 277.18,
+                'D': 293.66,
+                'D#': 311.13,
+                'E': 329.63,
+                'F': 349.23,
+                'F#': 369.99,
+                'G': 392.00,
+                'G#': 415.30,
+                'A': 440.00,
+                'A#': 466.16,
+                'B': 493.88
+            };
+
+            // set the note length to 0.25 seconds by default
+            let note_length = 1;
+
+            //create a function that plays a note for a certain note_length THEN stops the note
+            function play(x) {
+                const audioCtx = new AudioContext();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.frequency.value = notes[x];
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                const oscillator_type = document.querySelector('select').value;
+                oscillator.type = oscillator_type;
+                setTimeout(function () {
+                    oscillator.start();
+                }, 0);
+                const volume = document.querySelector('.volume-slider').value;
+                gainNode.gain.value = volume;
+
+                setTimeout(() => {
+                    oscillator.stop();
+                }, note_length * 1000);
+            }
+
+            // PLAY BUTTON
+            playButton.addEventListener('click', () => {
+                const input = document.querySelector('input').value;
+                const notes = input.split(' ');
+                note_length = 60 / document.getElementById('metronomeRange').value;
+                notes.forEach((note, index) => {
+                    setTimeout(() => {
+                        play(note);
+                    }, index * note_length * 1000);
+                });
+            });
+
+            // STOP BUTTON
+            stopButton.addEventListener('click', () => {
+                const audioCtx = new AudioContext();
+                audioCtx.close();
+            });
+
+
+            // LOOP BUTTON
+            loopButton.addEventListener('click', () => {
+                const input = document.querySelector('input').value;
+                const notes = input.split(' ');
+                const bpm = document.querySelector('.bpm-slider').value;
+                note_length = 60 / bpm;
+                let index = 0;
+                let loop = true;
+                let interval;
+                function playNotes() {
+                    play(notes[index]);
+                    index++;
+                    if (index === notes.length) {
+                        index = 0;
+                    }
+                }
+                function startLoop() {
+                    interval = setInterval(playNotes, note_length * 1000);
+                }
+                function stopLoop() {
+                    clearInterval(interval);
+                }
+                startLoop();
+                stopButton.addEventListener('click', () => {
+                    stopLoop();
+                });
+            });
+
+            // Div styling
+            div.style.height = '250px';
+            div.style.width = '400px';
+            div.style.margin = '0 auto';
+            div.style.marginTop = '10px';
+            div.style.border = '1px solid black';
+            div.style.backgroundColor = '#ffc6b0';
+            div.style.borderRadius = '5px';
+            return div;
+        }
+
+        function templateTwo() {
+            var div = document.createElement('div');
+
+            // create a spacer div
+            var spacer = document.createElement('div');
+            spacer.classList.add('spacer');
+            div.appendChild(spacer);
+
+            // create a spacer div
+            var spacer = document.createElement('div');
+            spacer.classList.add('spacer');
+            div.appendChild(spacer);
+
+            //create a h3 element
+            var note_display = document.createElement('h4');
+            note_display.innerHTML = 'played notes will appear here';
+            div.appendChild(note_display);
+
+            // create a spacer div
+            var spacer = document.createElement('div');
+            spacer.classList.add('spacer');
+            div.appendChild(spacer);
+
+            // add a label for the note length slider that updates as the slider is moved
+            var noteLengthLabel = document.createElement('label');
+            noteLengthLabel.classList.add('note-length-label');
+            noteLengthLabel.innerHTML = 'Note Length:';
+            div.appendChild(noteLengthLabel);
+
+            // create a slider for note play length, with the label note length and a value of 1
+            var noteLengthSlider = document.createElement('input');
+            noteLengthSlider.classList.add('note-length-slider');
+            noteLengthSlider.type = 'range';
+            noteLengthSlider.min = '0.1';
+            noteLengthSlider.max = '2';
+            noteLengthSlider.step = '0.1';
+            noteLengthSlider.value = '1';
+            div.appendChild(noteLengthSlider);
+
+            // update the label as the slider is moved
+            noteLengthSlider.addEventListener('input', () => {
+                noteLengthLabel.innerHTML = noteLengthSlider.value;
+            });
+
+            // create a spacer div
+            var spacer = document.createElement('div');
+            spacer.classList.add('spacer');
+            div.appendChild(spacer);
+
+            // create a label for the oscillator selector
+            var oscLabel = document.createElement('label');
+            oscLabel.innerHTML = 'Oscillator Type: ';
+            div.appendChild(oscLabel);
+
+            // create a dropdown menu that let you choose the oscillator type
+            var oscType = document.createElement('select');
+            oscType.classList.add('osc-type');
+            div.appendChild(oscType);
+
+            // create an option for each osc type
+            var sine = document.createElement('option');
+            sine.innerHTML = 'sine';
+            oscType.appendChild(sine);
+
+            var square = document.createElement('option');
+            square.innerHTML = 'square';
+            oscType.appendChild(square);
+
+            var sawtooth = document.createElement('option');
+            sawtooth.innerHTML = 'sawtooth';
+            oscType.appendChild(sawtooth);
+
+            var triangle = document.createElement('option');
+            triangle.innerHTML = 'triangle';
+            oscType.appendChild(triangle);
+
+            navigator.requestMIDIAccess().then(function (midiAccess) {
+                // get the inputs
+                var inputs = midiAccess.inputs;
+                // loop through the inputs
+                for (var input of inputs.values()) {
+                    // connect to the input
+                    input.onmidimessage = function (event) {
+                        // get the note
+                        var note = event.data[1];
+                        // get the velocity
+                        var velocity = event.data[2];
+                        // if the velocity is greater than 0
+                        if (velocity > 0) {
+                            // play the note
+                            play(note, velocity);
+                            // display the note
+                            note_display.innerHTML = note + ' ' + velocity;
+                        }
+                    };
+                }
+            });
+
+            function play(note, velocity) {
+                var audioContext = new AudioContext();
+                var oscillator = audioContext.createOscillator();
+                var gainNode = audioContext.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                oscillator.type = oscType.value;
+                oscillator.frequency.value = noteToFrequency(note);
+                gainNode.gain.value = velocity / 127;
+                setTimeout(function () {
+                    oscillator.start();
+                }, 0);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + noteLengthSlider.value);
+                setTimeout(function () {
+                    oscillator.stop();
+                }, noteLengthSlider.value * 1000);
+            }
+
+            function noteToFrequency(note) {
+                return 440 * Math.pow(2, (note - 69) / 12);
+            }
+
+            // Div styling
+            div.style.height = '150px';
+            div.style.width = '400px';
+            div.style.margin = '0 auto';
+            div.style.marginTop = '10px';
+            div.style.border = '1px solid black';
+            div.style.backgroundColor = '#e6b0ff';
+            div.style.borderRadius = '5px';
+            return div;
+        }
+
+        function templateThree() {
+            var div = document.createElement('div');
+            // list all the midi devices that are connected in a div
+            // create a dropdown menu
+            var midiDevices = document.createElement('select');
+            midiDevices.classList.add('midi-devices');
+            div.appendChild(midiDevices);
+
+            // create a button that will run a function that lists all the midi devices
+            var midiButton = document.createElement('button');
+            midiButton.classList.add('midi-button');
+            midiButton.innerHTML = 'List MIDI Devices';
+            midiButton.addEventListener('click', listMidiDevices);
+            div.appendChild(midiButton);
+
+            // create the function that lists all the midi devices and appends them to the div
+            function listMidiDevices() {
+                // clear the div
+                midiDevices.innerHTML = '';
+                // get the midi devices
+                navigator.requestMIDIAccess().then(function (midiAccess) {
+                    // get the inputs
+                    var inputs = midiAccess.inputs;
+                    // loop through the inputs
+                    for (var input of inputs.values()) {
+                        // create a div for each input
+                        var inputOption = document.createElement('option');
+                        inputOption.classList.add('input-option');
+                        inputOption.innerHTML = input.name;
+                        midiDevices.appendChild(inputOption);
+                    }
+                });
+            }
+            div.style.height = '100px';
+            div.style.width = '400px';
+            div.style.margin = '0 auto';
+            div.style.marginTop = '10px';
+            div.style.border = '1px solid black';
+            div.style.backgroundColor = '#e6b0ff';
+            div.style.borderRadius = '5px';
+            return div;
+        }
+
+        function templateFour() {
+            var div = document.createElement('div');
+
+            // Div styling
+            div.style.height = '250px';
+            div.style.width = '400px';
+            div.style.margin = '0 auto';
+            div.style.marginTop = '10px';
+            div.style.border = '1px solid black';
+            div.style.backgroundColor = '#ffc6b0';
+            div.style.borderRadius = '5px';
+            return div;
+        }
+    </script>
+</body>
+
+</html>
