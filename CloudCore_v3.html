@@ -90,9 +90,14 @@
                 var filename = 'CloudCore_v1.html';
                 var blob = new Blob([html], { type: 'text/html' });
                 var a = document.createElement('a');
-                a.href = URL.createObjectURL(blob);
-                a.download = filename;
-                a.click();
+                try {
+                    a.href = URL.createObjectURL(blob);
+                    a.download = filename;
+                    a.click();
+                    URL.revokeObjectURL(a.href);
+                } catch (error) {
+                    console.log(error);
+                }
             });
         </script>
     </div>
