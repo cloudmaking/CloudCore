@@ -1,23 +1,32 @@
 # CloudCore - an open source DAW
-As a developer, I have always been fascinated by digital audio workspaces (DAWs) and the endless possibilities they offer for creating and manipulating sound. That is why I am excited to announce my latest project: an open-source DAW built using JavaScript and HTML, packaged in a single downloadable HTML file.
 
-The goal of this project is to create a simple, user-friendly DAW that can be run offline and on any device with a browser. Some of the features I hope to implement include:
+Clone or download the repo > double click the html file > start making music!
 
-A record button that exports audio in the WAV format
-A basic synthesizer that can receive live MIDI data from a MIDI output device
-A recorder that can capture audio from the default computer microphone
-I am reaching out to the community for help and collaboration on this project. While I am experienced in JavaScript, I am still learning and would welcome any contributions, ideas, or feedback. This project is built on the open-source spirit, and I am excited to see what we can create together.
+## What is CloudCore?
+A free digital audio workstation (DAW) that runs in your browser. It's a work in progress, but it's already pretty fun to use. I am thinking of building it with [Tone.js](https://tonejs.github.io/) adn other web music modules {if you have any suggestion please do leave them as an issue or dm me}. still in the early days though. i am willing to accept pull requests and help from anyone who wants to contribute. this will be a long journey, but i am excited to see where it goes.
 
-One of the main reasons for choosing a single HTML file is its convenience and ease of use. It can be easily downloaded and run offline, eliminating the need for any additional setup. Additionally, this format allows the DAW to be run on any device with a browser, making it accessible to a wide range of users.
+## How to use it
+- Clone or download the repo
+- Run the html file in your browser
+- make music!
 
-Stay tuned for updates on this project, and please feel free to reach out if you are interested in contributing or have any questions. I am excited to see where this project goes and can't wait to share it with the world.
+Alternatively you can use the hosted version on [my website](https://www.downbad.cloud/CloudCore/) *Once version 1.0 is ready*
 
-You can view the current demo on my website:
-https://www.aliraza.cloud/apps/cloudcore-daw
+## What can it do?
+For not not much but in the future it will be able to record mic and midi input and play back audio files. it will also have a sequencer and a mixer. i am also thinking of adding a synth and a sampler.
 
-Or alternatively find the code on GitHub:
-https://github.com/cloudmaking/CloudCore
+## What is the goal?
+The goal is to make a free, open source, and easy to use DAW that runs in your browser. i am also hoping to make it a platform for other developers to build on top of. i am thinking of adding a plugin system so that other developers can add their own plugins to the DAW. i am also thinking of adding a way for users to share their projects with each other.
 
-Sadly I have been sick on and off for the past week so I haven't had much time of motivation to code, looking forward to getting back at it soon, if you do want to contribute or help feel free to DM me on Twitter or Instagram @cloudmaking
+## How can you help?
+If you are a developer and you want to help, you can contribute to the project by adding features, fixing bugs, or improving the code. if you are not a developer, you can help by testing the DAW and giving me feedback. you can also help by spreading the word about the project. if you have any questions, feel free to contact me.
 
-As this is an ongoing project, make sure to follow me so you can stay up to date. Thank you for Reading and Have an amazing day!
+## Contact
+If you have any questions, feel free to contact me at @cloudmaking on twitter
+
+## License
+MIT
+
+## help fund the project
+if you want to help fund the project, you can donate to my paypal at [paypal.me/cloudmaking](https://www.paypal.com/paypalme/cloudmaking)
+
