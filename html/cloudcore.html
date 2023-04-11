@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>CloudCore</title>
+    <link rel="stylesheet" href="/css/cloudcore.css">
+    <script src="/js/cloudcore.js" defer></script>
+</head>
+
+<body>
+    <div id="main-controls">
+        <div class="container left-container">
+            <button id="home-btn" class="control-btn">Home</button>
+            <div id="bpm-container" class="control-group">
+                <button id="tap-bpm-btn" class="control-btn">Tap</button>
+                <input id="bpm-input" class="control-input" type="text" placeholder="BPM">
+            </div>
+        </div>
+        <div class="container mid-container">
+            <button id="play-btn" class="control-btn">Play</button>
+            <button id="pause-btn" class="control-btn">Pause</button>
+            <button id="record-btn" class="control-btn">Rec</button>
+            <button id="stop-btn" class="control-btn">Stop</button>
+        </div>
+        <div class="container right-container">
+            <button id="settings-btn" class="control-btn">Settings</button>
+            <button id="add-track-btn" class="control-btn">Add Track</button>
+        </div>
+    </div>
+
+    <div id="track-area">
+        <div id="track-container"></div>
+    </div>
+
+    <div id="add-track-modal" class="modal">
+        <div class="modal-content">
+            <button id="add-audio-track-btn" class="track-btn">Audio</button>
+            <button id="add-midi-track-btn" class="track-btn">MIDI</button>
+        </div>
+    </div>
+</body>
+</html>
