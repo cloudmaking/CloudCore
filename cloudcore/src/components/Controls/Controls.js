@@ -17,7 +17,7 @@ const Controls = () => {
   const handleBpmChange = (e) => {
     setBpm(e.target.value);
   };
-
+  
   return (
     <div className="controls">
       <button className="play-btn" onClick={handlePlay}>

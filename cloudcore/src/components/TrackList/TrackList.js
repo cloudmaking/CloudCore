@@ -15,8 +15,10 @@ const TrackList = () => {
 
   return (
     <div className="track-list">
-      <button onClick={addAudioTrack}>Add Audio Track</button>
-      <button onClick={addMidiTrack}>Add MIDI Track</button>
+      <div className="add-track-buttons"> {/* Add a container div */}
+        <button onClick={addAudioTrack}>Add Audio Track</button>
+        <button onClick={addMidiTrack}>Add MIDI Track</button>
+      </div>
       {tracks.map((track) => (
         <Track key={track.id} type={track.type} />
       ))}
