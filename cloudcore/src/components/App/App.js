@@ -6,7 +6,11 @@ import TrackList from '../TrackList/TrackList';
 const App = () => {
   return (
     <div className="app">
-      <h1>CloudCore</h1>
+      <div className="header-container">
+        <button className="downbad-button" onClick={() => window.open('https://www.downbad.cloud', '_blank')}>DownBad</button>
+        <h1>CloudCore</h1>
+        <button className="downbad-button" onClick={() => window.open('https://github.com/cloudmaking/CloudCore', '_blank')}>Github</button>
+      </div>
       <Controls />
       <TrackList />
     </div>
