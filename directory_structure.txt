@@ -1,0 +1,33 @@
+cloudcore
+    node_modules
+    public
+        favicon.ico
+        index.html
+        manifest.json
+    src
+        components
+            App
+                App.js
+                App.scss
+            Controls
+                Controls.js
+                Controls.scss
+            Track
+                AudioTrack
+                    AudioTrack.js
+                    AudioTrack.scss
+                MidiTrack
+                    MidiTrack.js
+                    MidiTrack.scss
+                Track.js
+                Track.scss
+            Tracklist
+                Tracklist.js
+                Tracklist.scss
+        index.js
+        index.scss
+    .gitignore
+    package-lock.json
+    package.json
+    README.md
+.gitattributes

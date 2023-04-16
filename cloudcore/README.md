@@ -1,7 +1,5 @@
 # CloudCore
 
-![CloudCore](./public/cloudcore-logo.png)
-
 CloudCore is a free-to-use, browser-based digital audio workstation (DAW) that allows you to create and edit music projects without needing to install any software. CloudCore provides a simple and intuitive interface that makes it easy for both beginners and experienced musicians to get started.
 
 ## Features
@@ -38,3 +36,7 @@ If you'd like to contribute to the development of CloudCore, please submit a pul
 
 ## Support CloudCore
 CloudCore is an open-source project that relies on the support of its users. If you find this project helpful and would like to contribute to its development, please consider making a donation through PayPal.
+
+## License
+MIT
+
