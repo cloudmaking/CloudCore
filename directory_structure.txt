@@ -12,6 +12,9 @@ cloudcore
             Controls
                 Controls.js
                 Controls.scss
+            Knob
+                Knob.js
+                Knob.scss
             Track
                 AudioTrack
                     AudioTrack.js
@@ -21,6 +24,7 @@ cloudcore
                     MidiTrack.scss
                 Track.js
                 Track.scss
+                TrackControls.js
             Tracklist
                 Tracklist.js
                 Tracklist.scss
