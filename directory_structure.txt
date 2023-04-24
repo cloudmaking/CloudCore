@@ -12,9 +12,6 @@ cloudcore
             Controls
                 Controls.js
                 Controls.scss
-            Knob
-                Knob.js
-                Knob.scss
             Track
                 AudioTrack
                     AudioTrack.js
