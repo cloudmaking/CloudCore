@@ -1,7 +1,6 @@
 cloudcore
     node_modules
     public
-        favicon.ico
         index.html
         manifest.json
     src
@@ -12,9 +11,6 @@ cloudcore
             Controls
                 Controls.js
                 Controls.scss
-            Knob
-                Knob.js
-                Knob.scss
             Track
                 AudioTrack
                     AudioTrack.js
@@ -25,11 +21,13 @@ cloudcore
                 Track.js
                 Track.scss
                 TrackControls.js
+                TrackControls.scss
             Tracklist
                 Tracklist.js
                 Tracklist.scss
         index.js
         index.scss
+        PlayContext.js
     .gitignore
     package-lock.json
     package.json
