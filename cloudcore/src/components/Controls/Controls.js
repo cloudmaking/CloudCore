@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Controls.scss';
+import AudioContext from '../../AudioContext';
 
 const Controls = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -17,28 +18,30 @@ const Controls = () => {
   const handleBpmChange = (e) => {
     setBpm(e.target.value);
   };
-  
+
   return (
-    <div className="controls">
-      <button className="play-btn" onClick={handlePlay}>
-        {isPlaying ? 'Stop' : 'Play'}
-      </button>
-      <button className="record-btn" onClick={handleRecord}>
-        {isRecording ? 'Stop Recording' : 'Record'}
-      </button>
-      <div className="bpm-container">
-        <label htmlFor="bpm">BPM: </label>
-        <input
-          type="number"
-          id="bpm"
-          name="bpm"
-          value={bpm}
-          onChange={handleBpmChange}
-          min="20"
-          max="300"
-        />
+    <AudioContext.Provider value={{ isPlaying }}>
+      <div className="controls">
+        <button className="play-btn" onClick={handlePlay}>
+          {isPlaying ? 'Stop' : 'Play'}
+        </button>
+        <button className="record-btn" onClick={handleRecord}>
+          {isRecording ? 'Stop Recording' : 'Record'}
+        </button>
+        <div className="bpm-container">
+          <label htmlFor="bpm">BPM: </label>
+          <input
+            type="number"
+            id="bpm"
+            name="bpm"
+            value={bpm}
+            onChange={handleBpmChange}
+            min="20"
+            max="300"
+          />
+        </div>
       </div>
-    </div>
+    </AudioContext.Provider>
   );
 };
 
