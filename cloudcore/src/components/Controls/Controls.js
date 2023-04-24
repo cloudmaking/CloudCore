@@ -1,6 +1,4 @@
-// Controls.js
 import React, { useState } from 'react';
-import PlayContext from '../../PlayContext';
 import './Controls.scss';
 
 const Controls = () => {
@@ -19,30 +17,28 @@ const Controls = () => {
   const handleBpmChange = (e) => {
     setBpm(e.target.value);
   };
-
+  
   return (
-    <PlayContext.Provider value={{ isPlaying, setIsPlaying }}>
-      <div className="controls">
-        <button className="play-btn" onClick={handlePlay}>
-          {isPlaying ? 'Stop' : 'Play'}
-        </button>
-        <button className="record-btn" onClick={handleRecord}>
-          {isRecording ? 'Stop Recording' : 'Record'}
-        </button>
-        <div className="bpm-container">
-          <label htmlFor="bpm">BPM: </label>
-          <input
-            type="number"
-            id="bpm"
-            name="bpm"
-            value={bpm}
-            onChange={handleBpmChange}
-            min="20"
-            max="300"
-          />
-        </div>
+    <div className="controls">
+      <button className="play-btn" onClick={handlePlay}>
+        {isPlaying ? 'Stop' : 'Play'}
+      </button>
+      <button className="record-btn" onClick={handleRecord}>
+        {isRecording ? 'Stop Recording' : 'Record'}
+      </button>
+      <div className="bpm-container">
+        <label htmlFor="bpm">BPM: </label>
+        <input
+          type="number"
+          id="bpm"
+          name="bpm"
+          value={bpm}
+          onChange={handleBpmChange}
+          min="20"
+          max="300"
+        />
       </div>
-    </PlayContext.Provider>
+    </div>
   );
 };
 
