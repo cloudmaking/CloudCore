@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useContext } from 'react';
 import './AudioTrack.scss';
-import AudioContext from '../../AudioContext';
+import AudioContext from '../../../AudioContext';
 
 const AudioTrack = () => {
   const audioRef = useRef();

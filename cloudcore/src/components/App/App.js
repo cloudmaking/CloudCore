@@ -2,6 +2,7 @@ import React from 'react';
 import './App.scss';
 import Controls from '../Controls/Controls';
 import TrackList from '../TrackList/TrackList';
+import AudioContext from '../../AudioContext';
 
 const App = () => {
   return (
@@ -11,8 +12,10 @@ const App = () => {
         <h1>CloudCore</h1>
         <button className="downbad-button" onClick={() => window.open('https://github.com/cloudmaking/CloudCore', '_blank')}>Github</button>
       </div>
-      <Controls />
-      <TrackList />
+      <AudioContext.Provider value={useAudio()}>
+        <Controls />
+        <TrackList />
+      </AudioContext.Provider>
     </div>
   );
 };
