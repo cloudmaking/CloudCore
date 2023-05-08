@@ -1,22 +1,33 @@
 import React, { useState, useRef, useEffect } from "react";
+import { Button, Grid, Slider, Box } from "@mui/material";
 import { Howl } from "howler";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
+import WaveformViewer from "./WaveformViewer";
 
-
-const AudioTrack = ({ onDelete, onRef }) => {
+const AudioTrack = ({ onDelete }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isAudioUploaded, setIsAudioUploaded] = useState(false);
   const [isLooping, setIsLooping] = useState(false);
   const [volume, setVolume] = useState(1);
+  const [isAudioUploaded, setIsAudioUploaded] = useState(false);
   const audioRef = useRef(null);
+  const [audioURL, setAudioURL] = useState(null);
 
-  useEffect(() => {
-    if (onRef) {
-      onRef(audioRef);
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setAudioURL(url);
+      const fileFormat = file.name.split(".").pop();
+      audioRef.current = new Howl({
+        src: [url],
+        format: [fileFormat],
+        volume,
+        loop: isLooping,
+        onload: () => {
+          setIsAudioUploaded(true);
+        },
+      });
     }
-  }, [onRef]);
+  };
 
   const play = () => {
     if (audioRef.current) {
@@ -24,45 +35,32 @@ const AudioTrack = ({ onDelete, onRef }) => {
         audioRef.current.pause();
       } else {
         audioRef.current.play();
+        if (isLooping) {
+          audioRef.current.loop(true);
+        } else {
+          audioRef.current.loop(false);
+        }
       }
       setIsPlaying(!isPlaying);
     }
   };
 
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.loop(isLooping);
+    }
+  }, [isLooping]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume(volume);
+    }
+  }, [volume]);
+
   const stop = () => {
     if (audioRef.current) {
       audioRef.current.stop();
       setIsPlaying(false);
-    }
-  };
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const objectURL = URL.createObjectURL(file);
-      const fileExtension = file.name.split(".").pop().toLowerCase();
-      audioRef.current = new Howl({
-        src: [objectURL],
-        format: [fileExtension],
-        loop: isLooping,
-        onend: () => setIsPlaying(false),
-      });
-      setIsAudioUploaded(true);
-    }
-  };
-
-  const toggleLoop = () => {
-    setIsLooping(!isLooping);
-    if (audioRef.current) {
-      audioRef.current.loop(!isLooping);
-    }
-  };
-
-  const handleVolumeChange = (event) => {
-    const newVolume = parseFloat(event.target.value);
-    setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume(newVolume);
     }
   };
 
@@ -88,22 +86,22 @@ const AudioTrack = ({ onDelete, onRef }) => {
           </Button>
         </Grid>
         <Grid item>
-          <Button
-            component="label"
-            variant="contained"
-            style={{
-              backgroundColor: isAudioUploaded ? "green" : "red",
-              color: "white",
-            }}
-          >
-            Import Audio
-            <input
-              type="file"
-              accept="audio/*"
-              hidden
-              onChange={handleFileChange}
-            />
-          </Button>
+          <input
+            accept="audio/*"
+            hidden
+            id="upload-audio"
+            type="file"
+            onChange={handleFileChange}
+          />
+          <label htmlFor="upload-audio">
+            <Button
+              variant="contained"
+              color={isAudioUploaded ? "success" : "error"}
+              component="span"
+            >
+              Import Audio
+            </Button>
+          </label>
         </Grid>
         <Grid item>
           <Button variant="contained" onClick={onDelete}>
@@ -111,26 +109,36 @@ const AudioTrack = ({ onDelete, onRef }) => {
           </Button>
         </Grid>
         <Grid item>
-          <Button variant="contained" onClick={toggleLoop}>
-            {isLooping ? "Disable Loop" : "Enable Loop"}
-          </Button>
+          <label htmlFor="loop-toggle">Loop</label>
+          <input
+            id="loop-toggle"
+            type="checkbox"
+            checked={isLooping}
+            onChange={(e) => setIsLooping(e.target.checked)}
+          />
         </Grid>
         <Grid item>
-          <Box component="label" display="flex" flexDirection="column">
-            <span>Volume</span>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={volume}
-              onChange={handleVolumeChange}
-            />
-          </Box>
+          <label htmlFor="volume-slider">Volume</label>
+          <Slider
+            id="volume-slider"
+            value={volume}
+            min={0}
+            max={1}
+            step={0.01}
+            onChange={(event, newValue) => setVolume(newValue)}
+          />
         </Grid>
       </Grid>
+      <WaveformViewer
+        audioURL={audioURL}
+        isPlaying={isPlaying}
+        isLooping={isLooping}
+        onPlaybackEnd={() => setIsPlaying(false)}
+        onLoopPlayback={() => setIsPlaying(true)}
+      />
     </Box>
   );
 };
 
 export default AudioTrack;
+
