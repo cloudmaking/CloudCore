@@ -5,22 +5,21 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import AudioTrack from "./AudioTrack";
 
-
 const TrackContainer = () => {
   const [tracks, setTracks] = useState([]);
   const [allTracksPlaying, setAllTracksPlaying] = useState(false);
 
   const addTrack = () => {
-    setTracks((prevTracks) => [...prevTracks, { id: uuidv4(), audioRef: React.createRef() }]);
+    const newId = uuidv4();
+    setTracks((prevTracks) => [
+      ...prevTracks,
+      { id: newId, audioRef: React.createRef() },
+    ]);
   };
 
   const deleteTrack = (id) => {
-    const trackToDelete = tracks.find((track) => track.id === id);
-    if (trackToDelete && trackToDelete.audioRef.current) {
-      trackToDelete.audioRef.current.stop();
-    }
     setTracks((prevTracks) => prevTracks.filter((track) => track.id !== id));
-  };  
+  };
 
   const playAllTracks = () => {
     tracks.forEach((track) => track.audioRef.current?.play());
@@ -37,7 +36,7 @@ const TrackContainer = () => {
       playAllTracks();
     }
     setAllTracksPlaying(!allTracksPlaying);
-  };  
+  };
 
   return (
     <Box
@@ -62,13 +61,16 @@ const TrackContainer = () => {
         </Grid>
       </Grid>
       <Box>
-        {tracks.map((track, index) => (
-          <AudioTrack key={index} onDelete={() => deleteTrack(index)} />
+        {tracks.map((track) => (
+          <AudioTrack
+            key={track.id}
+            onDelete={() => deleteTrack(track.id)}
+            audioRef={track.audioRef}
+          />
         ))}
       </Box>
     </Box>
-  );  
-   
+  );
 };
 
 export default TrackContainer;

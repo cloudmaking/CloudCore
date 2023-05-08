@@ -1,14 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Grid, Slider, Box } from "@mui/material";
 import { Howl } from "howler";
 import WaveformViewer from "./WaveformViewer";
 
-const AudioTrack = ({ onDelete }) => {
+const AudioTrack = ({ onDelete, audioRef }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLooping, setIsLooping] = useState(false);
   const [volume, setVolume] = useState(1);
   const [isAudioUploaded, setIsAudioUploaded] = useState(false);
-  const audioRef = useRef(null);
   const [audioURL, setAudioURL] = useState(null);
 
   const handleFileChange = (event) => {
@@ -60,9 +59,17 @@ const AudioTrack = ({ onDelete }) => {
   const stop = () => {
     if (audioRef.current) {
       audioRef.current.stop();
+      audioRef.current.seek(0); // Reset the playback position to the start
       setIsPlaying(false);
+      resetWaveform(); // Reset the waveform to the start
     }
   };
+
+    // Add a new state to handle the waveform reset
+    const [resetWaveformKey, setResetWaveformKey] = useState(0);
+    const resetWaveform = () => {
+      setResetWaveformKey((prevKey) => prevKey + 1);
+    };
 
   return (
     <Box
@@ -130,6 +137,7 @@ const AudioTrack = ({ onDelete }) => {
         </Grid>
       </Grid>
       <WaveformViewer
+        key={resetWaveformKey} // Use the key prop to reset the waveform
         audioURL={audioURL}
         isPlaying={isPlaying}
         isLooping={isLooping}

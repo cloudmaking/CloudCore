@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import WaveSurfer from "wavesurfer.js";
 
-const WaveformViewer = ({ url, audioInstance, isLooping }) => {
+const WaveformViewer = ({ audioURL, isPlaying, isLooping }) => {
   const waveFormRef = useRef(null);
   const [waveSurfer, setWaveSurfer] = useState(null);
 
-  const initializeWaveform = () => {
+  const initializeWaveform = (url) => {
+    console.log("Initializing waveform with URL:", url);
     if (waveSurfer) {
       waveSurfer.destroy();
     }
@@ -17,31 +18,35 @@ const WaveformViewer = ({ url, audioInstance, isLooping }) => {
       cursorColor: "navy",
     });
 
-    newWaveSurfer.load(url);
     newWaveSurfer.on("ready", () => {
+      console.log("WaveSurfer is ready.");
       newWaveSurfer.drawBuffer();
     });
 
-    newWaveSurfer.on("finish", () => {
-      if (isLooping) {
-        newWaveSurfer.play();
-      }
+    newWaveSurfer.on("error", (error) => {
+      console.error("WaveSurfer error:", error);
     });
 
-    audioInstance.on("end", () => {
-      if (isLooping) {
-        newWaveSurfer.seekTo(0);
-      }
-    });
-
+    newWaveSurfer.load(url);
     setWaveSurfer(newWaveSurfer);
   };
 
   useEffect(() => {
-    if (url) {
-      initializeWaveform();
+    if (audioURL) {
+      initializeWaveform(audioURL);
     }
-  }, [url]);
+  }, [audioURL]);
+
+  // Add this effect to handle the isPlaying prop change
+  useEffect(() => {
+    if (waveSurfer) {
+      if (isPlaying) {
+        waveSurfer.play();
+      } else {
+        waveSurfer.pause();
+      }
+    }
+  }, [isPlaying]);
 
   return (
     <div
